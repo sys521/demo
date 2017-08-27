@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+
+  <meta charset="utf-8">
+  <title>JS</title>
+  <style>
+* {
+  margin:0;
+  padding:0;
+}
+ul,li{
+  list-style:none;
+  margin-top:10px;
+  padding-left:10px;
+}
+li>input{
+  display:block;
+  margin-top:10px;
+}
+
+  </style>
+</head>
+<body>
+  <form>
+    <ul>
+      <li>
+        <label for="dollars">美元：</label>
+        <input type="text" name="dollars" id="dollars">
+      </li>
+      <li>
+        <label for="exchange">汇率：</label>
+        <input type="text" name="exchange" id="exchange">
+      </li>
+      <li>
+        <label for="rmb">人民币：</label>
+        <input type="text" name="rmb" id="rmb">
+      </li>
+    </ul>
+  <form>
+    <script>
+      
+//确定是合法数字
+function isRightNumber(val,num){      
+  if(val && typeof +val==='number' && !isNaN(+val)){
+    var arr=val.split('.')
+    if(!arr[1] || arr[1].length<=num){
+      return true
+    }else{
+      console.log('请输入一个'+num+'小数')
+    }
+  }else{
+    console.log('请输入一个数字')
+  }
+}
+
+//处理成正确的小数
+var doNumber=function(val,num){    
+  var value=Number(val)
+  return value.toFixed(num)
+}
+
+// 输入美元
+
+$('#dollars').on('input',function(){
+  if(isRightNumber($(this).val(),2)){
+    var dollars=$(this).val()
+    var exchange=$('#exchange').val()
+    if(!exchange || exchange==0){
+      return;
+    }else{
+      let value=dollars/exchange
+      let exchangeValue=doNumber(value,2)
+      console.log(exchangeValue)
+      $('#rmb').val(exchangeValue)
+    }
+  }else{
+    $(this).val('')
+  }
+})
+ 
+//输入汇率
+$('#exchange').on('input',function(){
+  if($(this).val()== '0'){
+    $('#rmb').val('')
+    return;
+  }
+  if(isRightNumber($(this).val(),4)){
+    var dollars=$('#dollars').val()
+    if(!dollars){
+      return;
+    }else{
+      var value=dollars/$(this).val()
+      var exchangeValue=doNumber(value,2)
+      $('#rmb').val(exchangeValue)
+    }
+  }else{
+    $(this).val('')
+    $('#rmb').val('')
+  }
+})
+
+// 输入人民币
+$('#rmb').on('input',function(){ 
+  if(isRightNumber($(this).val(),2)){
+    var rmb=$(this).val()
+    var exchange=$('#exchange').val()
+    if(!exchange){
+      return;
+    }else{
+      let value=rmb*exchange
+      let exchangeValue=doNumber(value,2)
+      $('#dollars').val(exchangeValue)
+    }
+  }else{
+    $(this).val('')
+    console.log('请精确到两位小数')
+  }
+})
+
+    </script>  
+</body>
+</html>

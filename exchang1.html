@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<script src="http://vuejs.org/js/vue.js"></script>
+  <meta charset="utf-8">
+  <title>汇率计算 || vue </title>
+</head>
+<body>
+  <div id="app">
+     美元<input v-model="dol">
+    汇率<input v-model="rate">
+    人民币<input v-model="rm">
+  </div>
+  <script>
+    
+new Vue({
+  el:'#app',
+  data:{
+    dollars:"",
+    exchange:"",
+    rmb:""
+  },
+  methods:{
+    isRightNumber:function(val,num){
+      if( typeof +val==='number' && !isNaN(+val)){
+        var arr=val.split('.')
+        if(!arr[1] || arr[1].length<=num){
+        return true
+        }else{
+        console.log('请输入一个'+num+'位小数')
+        }
+      }else{
+        console.log('请输入一个数字')
+      }
+    },
+    doNumber:function(val,num){
+      var value=Number(val)
+      return value.toFixed(num)
+    },
+    
+  },
+  computed:{
+    dol:{
+      get:function(){
+        return this.dollars
+      },
+      set:function(newValue){
+        if(this.isRightNumber(newValue,2)){ 
+          this.dollars=newValue
+          if(this.exchange){
+            var middle=this.dollars/this.exchange
+            this.rmb=this.doNumber(middle,2)
+            console.log(this.rmb)
+          }
+        }else{
+        this.dollars=''
+        }
+      }  
+    },
+    rate:{
+      get:function(){
+        console.log(this.exchange)
+        return this.exchange
+      },
+      set:function(newValue){
+        if(this.isRightNumber(newValue,4)){
+            this.exchange=newValue
+            if(this.dollars){
+              var middle=this.dollars/this.exchange
+              this.rmb=this.doNumber(middle,2)
+            }
+        }else{
+          this.exchange=""
+        }
+      }
+    },
+    rm:{
+      get:function(){
+        return this.rmb
+      },
+      set:function(newValue){
+        if(this.isRightNumber(newValue,2)){
+          this.rmb=newValue
+          if(this.exchange){
+            var middle=this.rmb*this.exchange
+            this.dollars=this.doNumber(middle,2)
+          }
+        }else{
+          this.rmb=""
+        }
+      }
+    }
+
+  }
+})
+  </script>
+</body>
+</html>
